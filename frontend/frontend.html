@@ -1,0 +1,272 @@
+<!doctype html>
+<html class="dark" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Pharma Intelligence Analysis</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+            rel="stylesheet"
+        />
+        <style>
+            .material-symbols-outlined {
+                font-variation-settings:
+                    "FILL" 0,
+                    "wght" 400,
+                    "GRAD" 0,
+                    "opsz" 24;
+                font-size: 20px;
+            }
+        </style>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#1193d4",
+                            "background-light": "#f6f7f8",
+                            "background-dark": "#101c22",
+                        },
+                        fontFamily: { display: ["Inter", "sans-serif"] },
+                    },
+                },
+            };
+        </script>
+    </head>
+
+    <body class="font-display bg-background-light dark:bg-background-dark">
+        <div class="relative flex min-h-screen w-full flex-col">
+            <div
+                class="flex-1 flex justify-center py-5 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-40"
+            >
+                <div class="flex flex-col w-full max-w-[960px]">
+                    <!-- HEADER -->
+                    <header
+                        class="flex items-center justify-between border-b border-slate-200/10 dark:border-[#283339] px-4 sm:px-6 md:px-10 py-3"
+                    >
+                        <div
+                            class="flex items-center gap-4 text-slate-800 dark:text-white"
+                        >
+                            <div class="size-6 text-primary">
+                                <svg
+                                    fill="none"
+                                    viewBox="0 0 48 48"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        clip-rule="evenodd"
+                                        d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z"
+                                        fill="currentColor"
+                                        fill-rule="evenodd"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <h2
+                                class="text-slate-900 dark:text-white text-lg font-bold"
+                            >
+                                Pharma Intelligence Analysis
+                            </h2>
+                        </div>
+                    </header>
+
+                    <!-- MAIN -->
+                    <main class="flex-grow p-6 md:p-10 space-y-8">
+                        <!-- INPUT -->
+                        <div>
+                            <p
+                                class="text-slate-900 dark:text-white text-4xl font-black"
+                            >
+                                Pharma Intelligence Analysis
+                            </p>
+                            <p
+                                class="text-slate-500 dark:text-[#9db0b9] mt-2 text-base"
+                            >
+                                Enter your query to begin the multi-agent AI
+                                research process.
+                            </p>
+                        </div>
+
+                        <label class="flex flex-col w-full">
+                            <p
+                                class="text-slate-900 dark:text-white text-base font-medium pb-2"
+                            >
+                                Research Query
+                            </p>
+                            <textarea
+                                id="query-input"
+                                class="form-input w-full min-h-36 rounded-lg text-slate-900 dark:text-white border border-slate-300 dark:border-[#3b4b54] bg-white dark:bg-[#1c2327] focus:ring-2 focus:ring-primary/50 p-4"
+                                placeholder="Example: 'Analyze recent advancements in oncology drug delivery systems.'"
+                            ></textarea>
+                        </label>
+
+                        <!-- BUTTONS -->
+                        <div class="flex flex-wrap gap-3">
+                            <button
+                                id="run-btn"
+                                class="h-12 px-5 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition"
+                            >
+                                Run Analysis
+                            </button>
+                            <button
+                                id="download-btn"
+                                disabled
+                                class="h-12 px-5 bg-slate-200 dark:bg-[#283339] text-slate-600 dark:text-white font-bold rounded-lg opacity-50 cursor-not-allowed"
+                            >
+                                Download Report
+                            </button>
+                            <button
+                                id="reset-btn"
+                                class="h-12 px-5 bg-transparent text-slate-600 dark:text-white font-bold rounded-lg ring-1 ring-slate-300 dark:ring-[#3b4b54] hover:bg-slate-100 dark:hover:bg-[#283339] transition"
+                            >
+                                New Query / Reset
+                            </button>
+                        </div>
+
+                        <!-- PROGRESS -->
+                        <div id="progress-section" class="hidden space-y-2">
+                            <p
+                                id="progress-text"
+                                class="text-slate-800 dark:text-white text-base font-medium"
+                            >
+                                Analysis in Progress...
+                            </p>
+                            <div
+                                class="w-full rounded bg-slate-200 dark:bg-[#3b4b54]"
+                            >
+                                <div
+                                    id="progress-bar"
+                                    class="h-2 rounded bg-primary transition-all duration-500"
+                                    style="width: 0%"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- RESULTS -->
+                        <div id="results-section" class="hidden space-y-6 pt-4">
+                            <h3
+                                class="text-2xl font-bold text-slate-900 dark:text-white"
+                            >
+                                Analysis Complete
+                            </h3>
+                            <div
+                                id="results-container"
+                                class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                            ></div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const runBtn = document.getElementById("run-btn");
+            const resetBtn = document.getElementById("reset-btn");
+            const downloadBtn = document.getElementById("download-btn");
+            const queryInput = document.getElementById("query-input");
+            const progressSection = document.getElementById("progress-section");
+            const progressBar = document.getElementById("progress-bar");
+            const progressText = document.getElementById("progress-text");
+            const resultsSection = document.getElementById("results-section");
+            const resultsContainer =
+                document.getElementById("results-container");
+
+            const backendURL = "http://127.0.0.1:8000";
+
+            runBtn.addEventListener("click", async () => {
+                const query = queryInput.value.trim();
+                if (!query) return alert("Please enter a research query.");
+
+                progressSection.classList.remove("hidden");
+                progressText.textContent = "Initializing agents...";
+                progressBar.style.width = "10%";
+
+                runBtn.disabled = true;
+                runBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+                try {
+                    const response = await fetch(`${backendURL}/analyze`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query }),
+                    });
+
+                    progressText.textContent = "Running analysis...";
+                    progressBar.style.width = "60%";
+
+                    const data = await response.json();
+                    progressText.textContent = "Generating report...";
+                    progressBar.style.width = "90%";
+
+                    if (data && data.results) {
+                        displayResults(data.results);
+                        downloadBtn.disabled = false;
+                        downloadBtn.classList.remove(
+                            "opacity-50",
+                            "cursor-not-allowed",
+                        );
+                    }
+
+                    progressText.textContent = "Complete!";
+                    progressBar.style.width = "100%";
+                } catch (error) {
+                    alert("Error connecting to backend: " + error);
+                } finally {
+                    runBtn.disabled = false;
+                    runBtn.classList.remove("opacity-50", "cursor-not-allowed");
+                }
+            });
+
+            downloadBtn.addEventListener("click", async () => {
+                try {
+                    const response = await fetch(
+                        `${backendURL}/generate_report`,
+                    );
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "Agentic_AI_Research_Report.pdf";
+                    a.click();
+                } catch (error) {
+                    alert("Error downloading PDF report.");
+                }
+            });
+
+            resetBtn.addEventListener("click", () => {
+                queryInput.value = "";
+                progressSection.classList.add("hidden");
+                resultsSection.classList.add("hidden");
+                progressBar.style.width = "0%";
+                downloadBtn.disabled = true;
+                downloadBtn.classList.add("opacity-50", "cursor-not-allowed");
+            });
+
+            function displayResults(results) {
+                resultsSection.classList.remove("hidden");
+                resultsContainer.innerHTML = "";
+
+                for (const agent of Object.keys(results)) {
+                    const card = document.createElement("div");
+                    card.className =
+                        "flex flex-col gap-4 p-6 rounded-xl bg-white dark:bg-[#1c2327] border border-slate-200 dark:border-[#283339]";
+                    card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center size-10 rounded-lg bg-primary/20 text-primary">
+              <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 dark:text-white">${agent}</h4>
+          </div>
+          <p class="text-base text-slate-600 dark:text-slate-300">${results[agent]}</p>
+        `;
+                    resultsContainer.appendChild(card);
+                }
+            }
+        </script>
+    </body>
+</html>
